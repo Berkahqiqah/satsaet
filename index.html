@@ -1,109 +1,137 @@
 <!doctype html>
 <html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Murotal – video ayat</title>
-<link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#060f12">
+<title>Murotal Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#eceee9;--card:#fbfcfa;--ink:#111a16;--mut:#5d6a63;--line:#cfd6cf;--ac:#1f6b4a;--acf:#fff;--in:#fff;--gold:#c9a24a;color-scheme:light}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1310;--card:#161e19;--ink:#e9efe9;--mut:#93a29a;--line:#2b372f;--ac:#5fd48e;--acf:#0d1310;--in:#101712;--gold:#e2c06a;color-scheme:dark}}
+:root{--bg:#060f12;--ink:#eef4f1;--mut:#8aa097;--line:rgba(255,255,255,.1);--glass:rgba(255,255,255,.055);--gold:#ffd27a;--peach:#ff9d72;color-scheme:dark}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 'Space Grotesk',system-ui,Arial,sans-serif}
-body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-.bar{height:10px;background:repeating-linear-gradient(135deg,var(--ink) 0 16px,var(--gold) 16px 32px)}
-.w{max-width:1000px;margin:auto;padding:0 18px}
-header{padding:18px 0 6px}
-h1{margin:0;font-size:30px;letter-spacing:-.03em}
-.sub{margin:0;color:var(--mut);font-size:14px}
-.grid{display:grid;gap:20px;grid-template-columns:minmax(0,1fr);padding:14px 0 40px}
-@media(min-width:900px){.grid{grid-template-columns:minmax(0,1fr) 340px}.side{position:sticky;top:14px;align-self:start}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
-label{display:block;font-weight:600;margin:16px 0 6px}
-label:first-child{margin-top:0}
-input,select{width:100%;font:inherit;color:var(--ink);background:var(--in);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
-button{font:inherit;cursor:pointer}
-.b{background:var(--ac);color:var(--acf);border:0;border-radius:10px;padding:11px 18px;font-weight:700;min-height:44px}
-.g{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-height:44px;font-weight:600}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 'Plus Jakarta Sans',system-ui,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);min-height:100vh}
+.aura{position:fixed;inset:0;z-index:-1;background:radial-gradient(640px 420px at 12% -6%,rgba(20,184,166,.30),transparent 70%),radial-gradient(520px 420px at 92% 8%,rgba(99,102,241,.26),transparent 70%),radial-gradient(560px 520px at 60% 112%,rgba(255,157,114,.16),transparent 70%)}
+.w{max-width:1040px;margin:auto;padding:0 18px}
+header{display:flex;align-items:center;gap:14px;padding:26px 0 8px}
+.logo{width:46px;height:46px;border-radius:15px;background:linear-gradient(140deg,var(--gold),var(--peach));display:grid;place-items:center;box-shadow:0 8px 28px rgba(255,157,114,.35)}
+.logo svg{width:26px;height:26px}
+h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.sub{margin:2px 0 0;color:var(--mut);font-size:13.5px}
+.grid{display:grid;gap:18px;grid-template-columns:minmax(0,1fr);padding:14px 0 48px}
+@media(min-width:920px){.grid{grid-template-columns:minmax(0,1fr) 360px}.side{position:sticky;top:16px;align-self:start}}
+.col{display:grid;gap:14px}
+.panel{background:var(--glass);border:1px solid var(--line);border-radius:24px;padding:20px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+h2{margin:0 0 14px;font-size:16px;font-weight:700;letter-spacing:-.01em}
+label{display:block;font-size:12.5px;font-weight:600;color:var(--mut);margin:0 0 6px}
+input,select{width:100%;font:inherit;font-weight:600;color:var(--ink);background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:14px;padding:11px 14px;min-height:46px}
+select option{background:#0d1a1d}
+button{font:inherit;cursor:pointer;color:inherit}
 button:disabled{opacity:.5;cursor:default}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.set{display:flex;gap:8px;flex-wrap:wrap}
-.set button{border:1px solid var(--line);background:var(--in);color:var(--ink);border-radius:99px;padding:8px 16px;font-weight:600}
-.set button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.msg{font-size:14px;color:var(--mut);margin:12px 0 0;min-height:21px}
-.hint{font-size:13px;color:var(--mut);margin:14px 0 0}
-canvas{width:100%;max-width:300px;margin:0 auto;aspect-ratio:9/16;border-radius:10px;background:#000;display:block}
-@media(min-width:900px){canvas{max-width:none}}
-:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.cta{border:0;border-radius:16px;padding:14px 22px;min-height:52px;font-weight:800;font-size:16px;color:#2a1405;background:linear-gradient(120deg,var(--gold),var(--peach));box-shadow:0 10px 30px rgba(255,157,114,.3);transition:transform .15s}
+.cta:active:not(:disabled){transform:scale(.97)}
+.ghost{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:12px 18px;min-height:48px;font-weight:700}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:rgba(0,0,0,.2);border-radius:99px;padding:9px 16px;font-weight:700;font-size:14px;color:var(--mut)}
+.chip.on{background:var(--ink);color:#0a1613;border-color:var(--ink)}
+.qg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.q{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);background:rgba(0,0,0,.2);border-radius:16px;padding:10px 12px}
+.q b{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;color:#06130f;flex:none}
+.q span{font-weight:600;font-size:13.5px;line-height:1.25}
+.q.on{border-color:var(--gold);background:rgba(255,210,122,.1);box-shadow:0 0 0 1px var(--gold) inset}
+.sws{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:6px}
+.sw{border:1px solid var(--line);background:rgba(0,0,0,.2);border-radius:16px;padding:6px;display:grid;gap:6px;font-size:12px;font-weight:700;color:var(--mut)}
+.sw i{height:54px;border-radius:11px;display:block}
+.sw.on{border-color:var(--gold);color:var(--ink);box-shadow:0 0 0 1px var(--gold) inset}
+.lbl{margin:18px 0 8px}
+.act{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.act .cta{flex:1 1 200px}
+.msg{margin:12px 0 0;font-size:13px;color:var(--mut);min-height:20px;overflow-wrap:anywhere}
+.msg.err{color:#ffb4a2}
+.phone{border-radius:44px;padding:10px;background:linear-gradient(160deg,#2c3d39,#0b1412);box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.14)}
+canvas{width:100%;aspect-ratio:9/16;border-radius:34px;background:#000;display:block}
+@media(max-width:919px){.phone{max-width:320px;margin:auto}}
+.pl{display:flex;gap:12px;align-items:center;margin-top:14px}
+.pl .ghost{min-width:84px;padding:10px 16px;min-height:44px}
+input[type=range]{padding:0;min-height:0;border:0;background:none;accent-color:var(--gold);flex:1}
+.tm{font-size:12.5px;color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap}
+.note{color:var(--mut);font-size:12.5px;margin:14px 2px 0}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body>
-<div class="bar"></div>
+<div class="aura"></div>
 <div class="w">
-<header><h1>Murotal</h1><p class="sub">Pilih surah, ayat, dan qari. Teks, latar, dan video dibuat otomatis.</p></header>
-<div class="grid"><main class="card">
-<label for="sur">Surah</label><select id="sur"><option>Memuat daftar surah...</option></select>
+<header><div class="logo"><svg viewBox="0 0 24 24" fill="#2a1405"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg></div>
+<div><h1>Murotal Studio</h1><p class="sub">Pilih ayat dan qari, videonya jadi otomatis.</p></div></header>
+<div class="grid"><div class="col">
+<section class="panel"><h2>Surah dan ayat</h2>
+<label for="sur">Surah</label><select id="sur"></select>
 <div class="two"><div><label for="fr">Dari ayat</label><input id="fr" type="number" min="1" value="1"></div>
 <div><label for="to">Sampai ayat</label><input id="to" type="number" min="1" value="10"></div></div>
-<label for="qr">Qari</label><select id="qr"></select>
-<label>Target durasi</label><div class="set" id="durs"></div>
-<div class="row"><button class="g" id="fit">Pas-kan ayat ke durasi</button></div>
-<label>Latar</label><div class="set" id="ths"></div>
-<div class="row"><button class="b" id="prep">Siapkan</button><button class="g" id="exp">Ekspor video</button></div>
-<p class="msg" id="m"></p>
-<p class="hint">Teks ayat dan terjemahan dari alquran.cloud, audio dari cdn.islamic.network. Ekspor merekam pratinjau secara real-time ke WebM, jadi biarkan tab terbuka. Gunakan Chrome di komputer atau Android.</p>
-</main>
-<aside class="side card"><canvas id="cv" width="720" height="1280" aria-label="Pratinjau video"></canvas>
-<div class="row"><button class="g" id="pp">Putar</button><input type="range" id="sk" min="0" max="0" step="0.01" value="0" aria-label="Posisi" style="flex:1;min-height:0"><span class="hint" id="tm" style="margin:0">0:00</span></div></aside>
+<p class="lbl" style="margin-bottom:8px"></p>
+<label>Target durasi</label><div class="chips" id="durs"></div>
+<div style="margin-top:12px"><button class="ghost" id="fit">Pas-kan ayat ke durasi</button></div></section>
+<section class="panel"><h2>Suara qari</h2><div class="qg" id="qs"></div></section>
+<section class="panel"><h2>Latar video</h2><div class="sws" id="ths"></div></section>
+<section class="panel"><div class="act"><button class="cta" id="prep">Buat video</button><button class="ghost" id="exp">Simpan video</button></div>
+<p class="msg" id="m"></p></section>
+</div>
+<aside class="side"><div class="phone"><canvas id="cv" width="720" height="1280" aria-label="Pratinjau video"></canvas></div>
+<div class="pl"><button class="ghost" id="pp">Putar</button><input type="range" id="sk" min="0" max="0" step="0.01" value="0" aria-label="Posisi"><span class="tm" id="tm">0:00</span></div>
+<p class="note">Teks dari alquran.cloud, audio dari islamic.network. Video direkam real-time ke WebM, biarkan tab terbuka. Pakai Chrome di komputer atau Android.</p></aside>
 </div></div>
 <script>
 (()=>{
 const $=q=>document.querySelector(q),W=720,H=1280,cv=$("#cv"),g=cv.getContext("2d");
-const QARI=[["ar.alafasy","Misyari Rasyid Alafasy",128,"Alafasy_128kbps"],["ar.husary","Mahmoud Khalil Al-Husary",128,"Husary_128kbps"],["ar.minshawi","Muhammad Siddiq Al-Minshawi",128,"Minshawy_Murattal_128kbps"],["ar.abdulbasitmurattal","Abdul Basit Abdus Samad",192,"Abdul_Basit_Murattal_192kbps"],["ar.abdurrahmaansudais","Abdurrahman As-Sudais",192,"Abdurrahmaan_As-Sudais_192kbps"],["ar.shaatree","Abu Bakr Ash-Shatri",128,"Abu_Bakr_Ash-Shaatree_128kbps"],["ar.hudhaify","Ali Al-Hudhaify",64,"Hudhaify_128kbps"],["ar.mahermuaiqly","Maher Al-Muaiqly",128,"Maher_AlMuaiqly_128kbps"]];
+const QARI=[["ar.alafasy","Misyari Rasyid Alafasy",128,"Alafasy_128kbps","MA"],["ar.husary","Mahmoud Khalil Al-Husary",128,"Husary_128kbps","KH"],["ar.minshawi","Muhammad Siddiq Al-Minshawi",128,"Minshawy_Murattal_128kbps","MM"],["ar.abdulbasitmurattal","Abdul Basit Abdus Samad",192,"Abdul_Basit_Murattal_192kbps","AB"],["ar.abdurrahmaansudais","Abdurrahman As-Sudais",192,"Abdurrahmaan_As-Sudais_192kbps","AS"],["ar.shaatree","Abu Bakr Ash-Shatri",128,"Abu_Bakr_Ash-Shaatree_128kbps","SH"],["ar.hudhaify","Ali Al-Hudhaify",64,"Hudhaify_128kbps","AH"],["ar.mahermuaiqly","Maher Al-Muaiqly",128,"Maher_AlMuaiqly_128kbps","MQ"]];
 const TH=[{n:"Malam",a:"#070b1f",b:"#1d2d66"},{n:"Fajar",a:"#1c1740",b:"#c8655f"},{n:"Hutan",a:"#06140f",b:"#1a5a3a"},{n:"Laut",a:"#04182b",b:"#0e6ba0"},{n:"Emas",a:"#120d05",b:"#5a4112"}];
-const S={dur:60,th:0};
+const S={dur:60,th:0,qari:0};
 let surahs=[],txt={},bufs={},segs=[],total=0,ready=false;
 let AC,dest,srcs=[],t0=0,playing=false,off=0,onEnd=null;
-const m=t=>$("#m").textContent=t,fmt=t=>Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");
+const m=(t,e)=>{$("#m").textContent=t;$("#m").classList.toggle("err",!!e)},fmt=t=>Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0");
 const ac=()=>{if(!AC){AC=new(window.AudioContext||window.webkitAudioContext)();dest=AC.createMediaStreamDestination()}return AC};
 const busy=b=>["#prep","#fit","#exp"].forEach(q=>$(q).disabled=!!b);
-const cur=()=>surahs[+$("#sur").value-1];
-const qari=()=>QARI[+$("#qr").value];
+const cur=()=>surahs[+$("#sur").value-1],qari=()=>QARI[S.qari];
 
 /* ---------- kontrol ---------- */
-QARI.forEach((q,i)=>$("#qr").add(new Option(q[1],i)));
-[30,60,90,120].forEach(d=>{const b=document.createElement("button");b.textContent=d<60?d+" dtk":(d/60)+" mnt";b.onclick=()=>{S.dur=d;mk()};b.dataset.d=d;$("#durs").appendChild(b)});
-TH.forEach((t,i)=>{const b=document.createElement("button");b.textContent=t.n;b.onclick=()=>{S.th=i;mk()};b.dataset.i=i;$("#ths").appendChild(b)});
-function mk(){[...$("#durs").children].forEach(b=>b.classList.toggle("on",+b.dataset.d===S.dur));[...$("#ths").children].forEach(b=>b.classList.toggle("on",+b.dataset.i===S.th))}
+const mkb=(par,cls,html,fn,ds)=>{const b=document.createElement("button");b.className=cls;b.innerHTML=html;b.onclick=fn;Object.assign(b.dataset,ds);$(par).appendChild(b)};
+[30,60,90,120].forEach(d=>mkb("#durs","chip",d<60?d+" detik":d/60+" menit",()=>{S.dur=d;mk()},{d}));
+QARI.forEach((q,i)=>mkb("#qs","q",'<b style="background:linear-gradient(140deg,hsl('+(i*47+30)+',85%,72%),hsl('+(i*47+80)+',75%,58%))">'+q[4]+"</b><span>"+q[1]+"</span>",()=>{S.qari=i;ready=false;stopP();off=0;mk()},{i}));
+TH.forEach((t,i)=>mkb("#ths","sw",'<i style="background:linear-gradient(180deg,'+t.a+","+t.b+')"></i><span>'+t.n+"</span>",()=>{S.th=i;mk()},{i}));
+function mk(){[...$("#durs").children].forEach(b=>b.classList.toggle("on",+b.dataset.d===S.dur));[...$("#qs").children].forEach(b=>b.classList.toggle("on",+b.dataset.i===S.qari));[...$("#ths").children].forEach(b=>b.classList.toggle("on",+b.dataset.i===S.th))}
 mk();
-["#sur","#fr","#to","#qr"].forEach(q=>$(q).onchange=()=>{ready=false;stopP();off=0});
-document.fonts.load('40px "Amiri Quran"',"بسم");document.fonts.load('26px "Space Grotesk"',"a");
+["#sur","#fr","#to"].forEach(q=>$(q).onchange=()=>{ready=false;stopP();off=0});
+document.fonts.load('40px "Amiri Quran"',"بسم");document.fonts.load('700 26px "Plus Jakarta Sans"',"a");
 
 /* ---------- data ---------- */
 const SL="Al-Fatihah|الفاتحة|7;Al-Baqarah|البقرة|286;Ali 'Imran|آل عمران|200;An-Nisa'|النساء|176;Al-Ma'idah|المائدة|120;Al-An'am|الأنعام|165;Al-A'raf|الأعراف|206;Al-Anfal|الأنفال|75;At-Tawbah|التوبة|129;Yunus|يونس|109;Hud|هود|123;Yusuf|يوسف|111;Ar-Ra'd|الرعد|43;Ibrahim|إبراهيم|52;Al-Hijr|الحجر|99;An-Nahl|النحل|128;Al-Isra'|الإسراء|111;Al-Kahf|الكهف|110;Maryam|مريم|98;Ta-Ha|طه|135;Al-Anbiya'|الأنبياء|112;Al-Hajj|الحج|78;Al-Mu'minun|المؤمنون|118;An-Nur|النور|64;Al-Furqan|الفرقان|77;Ash-Shu'ara'|الشعراء|227;An-Naml|النمل|93;Al-Qasas|القصص|88;Al-'Ankabut|العنكبوت|69;Ar-Rum|الروم|60;Luqman|لقمان|34;As-Sajdah|السجدة|30;Al-Ahzab|الأحزاب|73;Saba'|سبأ|54;Fatir|فاطر|45;Ya-Sin|يس|83;As-Saffat|الصافات|182;Sad|ص|88;Az-Zumar|الزمر|75;Ghafir|غافر|85;Fussilat|فصلت|54;Ash-Shura|الشورى|53;Az-Zukhruf|الزخرف|89;Ad-Dukhan|الدخان|59;Al-Jathiyah|الجاثية|37;Al-Ahqaf|الأحقاف|35;Muhammad|محمد|38;Al-Fath|الفتح|29;Al-Hujurat|الحجرات|18;Qaf|ق|45;Adh-Dhariyat|الذاريات|60;At-Tur|الطور|49;An-Najm|النجم|62;Al-Qamar|القمر|55;Ar-Rahman|الرحمن|78;Al-Waqi'ah|الواقعة|96;Al-Hadid|الحديد|29;Al-Mujadilah|المجادلة|22;Al-Hashr|الحشر|24;Al-Mumtahanah|الممتحنة|13;As-Saff|الصف|14;Al-Jumu'ah|الجمعة|11;Al-Munafiqun|المنافقون|11;At-Taghabun|التغابن|18;At-Talaq|الطلاق|12;At-Tahrim|التحريم|12;Al-Mulk|الملك|30;Al-Qalam|القلم|52;Al-Haqqah|الحاقة|52;Al-Ma'arij|المعارج|44;Nuh|نوح|28;Al-Jinn|الجن|28;Al-Muzzammil|المزمل|20;Al-Muddaththir|المدثر|56;Al-Qiyamah|القيامة|40;Al-Insan|الإنسان|31;Al-Mursalat|المرسلات|50;An-Naba'|النبأ|40;An-Nazi'at|النازعات|46;'Abasa|عبس|42;At-Takwir|التكوير|29;Al-Infitar|الانفطار|19;Al-Mutaffifin|المطففين|36;Al-Inshiqaq|الانشقاق|25;Al-Buruj|البروج|22;At-Tariq|الطارق|17;Al-A'la|الأعلى|19;Al-Ghashiyah|الغاشية|26;Al-Fajr|الفجر|30;Al-Balad|البلد|20;Ash-Shams|الشمس|15;Al-Layl|الليل|21;Ad-Duha|الضحى|11;Ash-Sharh|الشرح|8;At-Tin|التين|8;Al-'Alaq|العلق|19;Al-Qadr|القدر|5;Al-Bayyinah|البينة|8;Az-Zalzalah|الزلزلة|8;Al-'Adiyat|العاديات|11;Al-Qari'ah|القارعة|11;At-Takathur|التكاثر|8;Al-'Asr|العصر|3;Al-Humazah|الهمزة|9;Al-Fil|الفيل|5;Quraysh|قريش|4;Al-Ma'un|الماعون|7;Al-Kawthar|الكوثر|3;Al-Kafirun|الكافرون|6;An-Nasr|النصر|3;Al-Masad|المسد|5;Al-Ikhlas|الإخلاص|4;Al-Falaq|الفلق|5;An-Nas|الناس|6";
-const err=e=>e&&e.name==="TypeError"?"Koneksi gagal. Matikan ad-blocker atau VPN untuk halaman ini, lalu coba lagi.":(e&&e.message)||"Terjadi kesalahan.";
-function init(){surahs=SL.split(";").map((x,i)=>{const p=x.split("|");return{number:i+1,englishName:p[0],name:"سورة "+p[1],numberOfAyahs:+p[2]}});$("#sur").innerHTML="";surahs.forEach(s=>$("#sur").add(new Option(s.number+". "+s.englishName+" ("+s.numberOfAyahs+" ayat)",s.number)));$("#sur").value=78;$("#to").value=10;m("Tekan Pas-kan ayat ke durasi, lalu Siapkan.")}
+function init(){surahs=SL.split(";").map((x,i)=>{const p=x.split("|");return{number:i+1,englishName:p[0],name:"سورة "+p[1],numberOfAyahs:+p[2]}});surahs.forEach(s=>$("#sur").add(new Option(s.number+". "+s.englishName+" ("+s.numberOfAyahs+" ayat)",s.number)));$("#sur").value=78;$("#to").value=10;m("Tekan Pas-kan ayat ke durasi, lalu Buat video.")}
 const strip=s=>s.replace(/[\u064B-\u065F\u0670\u0640]/g,"");
-const fj=u=>fetch(u).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
-async function fa(urls){const bad=[];for(const u of urls){try{const r=await fetch(u);if(r.ok)return await r.arrayBuffer();bad.push(new URL(u).host+" ("+r.status+")")}catch(e){bad.push(new URL(u).host)}}throw new Error("Audio gagal diunduh dari "+bad.join(" dan ")+". Matikan ad-blocker atau VPN untuk halaman ini, lalu coba lagi.")}
+/* ambil lewat proxy Vercel (/api/get) dulu, kalau tidak ada baru langsung */
+async function fx(u,kind){const r1=[];for(const t of ["/api/get?u="+encodeURIComponent(u),u]){try{const r=await fetch(t);if(r.ok)return kind==="json"?await r.json():await r.arrayBuffer();r1.push(r.status)}catch(e){r1.push("diblokir")}}throw new Error(new URL(u).host+" (proxy: "+r1[0]+", langsung: "+r1[1]+")")}
 async function getText(n){if(txt[n])return txt[n];let rows;
-try{const j=await fj("https://api.alquran.cloud/v1/surah/"+n+"/editions/quran-uthmani,id.indonesian"),a=j.data[0].ayahs,b=j.data[1].ayahs;rows=a.map((x,i)=>({gl:x.number,num:x.numberInSurah,ar:x.text,id:b[i].text}))}
-catch(e1){try{const[u,t]=await Promise.all([fj("https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number="+n),fj("https://api.quran.com/api/v4/quran/translations/33?chapter_number="+n)]);rows=u.verses.map((x,i)=>({gl:x.id,num:+x.verse_key.split(":")[1],ar:x.text_uthmani,id:t.translations[i].text.replace(/<[^>]+>/g,"")}))}
-catch(e2){throw new Error("Teks ayat gagal diambil dari api.alquran.cloud dan api.quran.com. Matikan ad-blocker atau VPN untuk halaman ini, lalu coba lagi.")}}
+try{const j=await fx("https://api.alquran.cloud/v1/surah/"+n+"/editions/quran-uthmani,id.indonesian","json"),a=j.data[0].ayahs,b=j.data[1].ayahs;rows=a.map((x,i)=>({gl:x.number,num:x.numberInSurah,ar:x.text,id:b[i].text}))}
+catch(e1){try{const[u,t]=await Promise.all([fx("https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number="+n,"json"),fx("https://api.quran.com/api/v4/quran/translations/33?chapter_number="+n,"json")]);rows=u.verses.map((x,i)=>({gl:x.id,num:+x.verse_key.split(":")[1],ar:x.text_uthmani,id:t.translations[i].text.replace(/<[^>]+>/g,"")}))}
+catch(e2){throw new Error("Teks ayat gagal diambil. "+e1.message+" | "+e2.message)}}
 rows.forEach((r,i)=>{if(n!==1&&i===0&&strip(r.ar.split(" ")[0])==="بسم")r.ar=r.ar.split(" ").slice(4).join(" ")});return txt[n]=rows}
-async function getBuf(a,n){const q=qari(),k=q[0]+a.gl;if(bufs[k])return bufs[k];const s3=String(n).padStart(3,"0")+String(a.num).padStart(3,"0");const ab=await fa(["https://cdn.islamic.network/quran/audio/"+q[2]+"/"+q[0]+"/"+a.gl+".mp3","https://everyayah.com/data/"+q[3]+"/"+s3+".mp3"]);return bufs[k]=await ac().decodeAudioData(ab)}
+async function getBuf(a,n){const q=qari(),k=q[0]+a.gl;if(bufs[k])return bufs[k];const s3=String(n).padStart(3,"0")+String(a.num).padStart(3,"0");let ab;
+try{ab=await fx("https://cdn.islamic.network/quran/audio/"+q[2]+"/"+q[0]+"/"+a.gl+".mp3")}catch(e1){try{ab=await fx("https://everyayah.com/data/"+q[3]+"/"+s3+".mp3")}catch(e2){throw new Error("Audio gagal diunduh. "+e1.message+" | "+e2.message)}}
+try{return bufs[k]=await ac().decodeAudioData(ab)}catch(e){throw new Error("File audio tidak bisa dibaca browser.")}}
 
-async function prep(){stopP();ready=false;busy(1);try{const n=+$("#sur").value,T=await getText(n),f=Math.max(1,Math.min(T.length,+$("#fr").value||1)),t=Math.min(T.length,Math.max(f,+$("#to").value||f));$("#fr").value=f;$("#to").value=t;const list=T.slice(f-1,t);m("Mengunduh audio "+list.length+" ayat...");const bs=await Promise.all(list.map(a=>getBuf(a,n)));let c=1;segs=list.map((a,i)=>{const s={a,buf:bs[i],start:c,dur:bs[i].duration};c+=s.dur+.7;return s});total=c+.5;$("#sk").max=total;off=0;ready=true;m("Siap: ayat "+f+" sampai "+t+", durasi "+fmt(total)+". Tekan Putar.")}catch(e){m(err(e))}busy(0)}
-async function fit(){busy(1);try{const T=await getText(+$("#sur").value),f=Math.max(1,Math.min(T.length,+$("#fr").value||1));let acc=1,t=f;for(let i=f;i<=T.length;i++){m("Menghitung durasi... ayat "+i);const d=(await getBuf(T[i-1],+$("#sur").value)).duration+.7;if(i>f&&acc+d>S.dur-.5)break;acc+=d;t=i}$("#fr").value=f;$("#to").value=t}catch(e){m(err(e));busy(0);return}busy(0);await prep()}
-$("#prep").onclick=prep;$("#fit").onclick=fit;
+async function prep(){stopP();ready=false;busy(1);try{const n=+$("#sur").value,T=await getText(n),f=Math.max(1,Math.min(T.length,+$("#fr").value||1)),t=Math.min(T.length,Math.max(f,+$("#to").value||f));$("#fr").value=f;$("#to").value=t;const list=T.slice(f-1,t);m("Mengunduh audio "+list.length+" ayat...");const bs=await Promise.all(list.map(a=>getBuf(a,n)));let c=1;segs=list.map((a,i)=>{const s={a,buf:bs[i],start:c,dur:bs[i].duration};c+=s.dur+.7;return s});total=c+.5;$("#sk").max=total;off=0;ready=true;m("Siap: ayat "+f+" sampai "+t+", durasi "+fmt(total)+".")}catch(e){m(e.message||"Gagal menyiapkan audio.",1)}busy(0)}
+async function fit(){busy(1);try{const n=+$("#sur").value,T=await getText(n),f=Math.max(1,Math.min(T.length,+$("#fr").value||1));let acc=1,t=f;for(let i=f;i<=T.length;i++){m("Menghitung durasi... ayat "+i);const d=(await getBuf(T[i-1],n)).duration+.7;if(i>f&&acc+d>S.dur-.5)break;acc+=d;t=i}$("#fr").value=f;$("#to").value=t}catch(e){m(e.message||"Gagal menghitung durasi.",1);busy(0);return}busy(0);await prep()}
+$("#fit").onclick=fit;
 
 /* ---------- pemutaran ---------- */
 function stopP(){srcs.forEach(s=>{try{s.stop()}catch(e){}});srcs=[];playing=false;$("#pp").textContent="Putar"}
 function play(from){if(!ready)return;stopP();const c=ac();c.resume();t0=c.currentTime-from;segs.forEach(s=>{if(s.start+s.dur<=from)return;const n=c.createBufferSource();n.buffer=s.buf;n.connect(c.destination);n.connect(dest);n.start(c.currentTime+Math.max(0,s.start-from),Math.max(0,from-s.start));srcs.push(n)});playing=true;$("#pp").textContent="Jeda"}
-$("#pp").onclick=async()=>{if(!ready){await prep();if(!ready)return;play(0);return}if(playing){off=AC.currentTime-t0;stopP()}else play(off>=total-.1?0:off)};
+$("#prep").onclick=async()=>{await prep();if(ready)play(0)};
+$("#pp").onclick=async()=>{if(!ready){await prep();if(ready)play(0);return}if(playing){off=AC.currentTime-t0;stopP()}else play(off>=total-.1?0:off)};
 $("#sk").oninput=e=>{const t=+e.target.value;if(playing)play(t);else off=t};
 function loop(){let t=playing?AC.currentTime-t0:off;if(playing&&t>=total){stopP();off=0;t=total;if(onEnd){const f=onEnd;onEnd=null;f()}}
 if(playing)off=t;draw(t);$("#sk").value=t;$("#tm").textContent=fmt(t)+" / "+fmt(total);requestAnimationFrame(loop)}
 
 /* ---------- ekspor ---------- */
-$("#exp").onclick=async()=>{if(!window.MediaRecorder){m("Browser ini tidak bisa merekam video. Pakai Chrome di komputer atau Android.");return}if(!ready)await prep();if(!ready)return;ac();const st=cv.captureStream(30);dest.stream.getAudioTracks().forEach(t=>st.addTrack(t));
+$("#exp").onclick=async()=>{if(!window.MediaRecorder){m("Browser ini tidak bisa merekam video. Pakai Chrome di komputer atau Android.",1);return}if(!ready)await prep();if(!ready)return;ac();const st=cv.captureStream(30);dest.stream.getAudioTracks().forEach(t=>st.addTrack(t));
 const mt=["video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"].find(x=>MediaRecorder.isTypeSupported(x)),ch=[],r=new MediaRecorder(st,mt?{mimeType:mt,videoBitsPerSecond:5e6}:{videoBitsPerSecond:5e6});
 r.ondataavailable=e=>e.data.size&&ch.push(e.data);
 r.onstop=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(ch,{type:"video/webm"}));a.download="murotal-"+cur().englishName.replace(/[^\w]+/g,"-")+".webm";a.click();m("Selesai. Video tersimpan di folder unduhan.");busy(0)};
@@ -117,20 +145,24 @@ g.save();g.beginPath();g.rect(0,0,W,H);g.arc(598,250,58,0,Math.PI*2,true);g.clip
 else if(S.th===1){const y=H*.74-14*Math.sin(t*.3),rg=g.createRadialGradient(W/2,y,0,W/2,y,560);rg.addColorStop(0,"rgba(255,205,130,.6)");rg.addColorStop(1,"rgba(255,205,130,0)");g.fillStyle=rg;g.fillRect(0,0,W,H)}
 else if(S.th===2){for(let i=0;i<45;i++){const x=R(i)*W+Math.sin(t*.5+i)*30,y=((R(i+5)*H-t*(8+22*R(i+9)))%H+H)%H;g.fillStyle="rgba(220,255,160,"+(.25+.5*Math.abs(Math.sin(t+i)))+")";g.beginPath();g.arc(x,y,1.5+R(i+3)*3,0,7);g.fill()}}
 else if(S.th===3){for(let j=0;j<6;j++){g.fillStyle="rgba(255,255,255,"+(.03+.02*j)+")";g.beginPath();g.moveTo(0,H);for(let x=0;x<=W;x+=20)g.lineTo(x,H*.42+j*95+Math.sin(x*.012+t*.6+j)*22);g.lineTo(W,H);g.fill()}}
-else{const rg=g.createRadialGradient(W/2,H*.45,0,W/2,H*.45,520);rg.addColorStop(0,"rgba(245,200,90,.28)");rg.addColorStop(1,"rgba(245,200,90,0)");g.fillStyle=rg;g.fillRect(0,0,W,H);g.save();g.translate(W/2,H*.45);g.rotate(t*.05);g.strokeStyle="rgba(245,200,90,.22)";g.lineWidth=3;for(let k=1;k<=3;k++){const s=k*110;g.strokeRect(-s,-s,2*s,2*s);g.rotate(Math.PI/4);g.strokeRect(-s,-s,2*s,2*s);g.rotate(-Math.PI/4)}g.restore()}}
-const AR=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+else{const rg=g.createRadialGradient(W/2,H*.45,0,W/2,H*.45,520);rg.addColorStop(0,"rgba(245,200,90,.28)");rg.addColorStop(1,"rgba(245,200,90,0)");g.fillStyle=rg;g.fillRect(0,0,W,H);g.save();g.translate(W/2,H*.45);g.rotate(t*.05);g.strokeStyle="rgba(245,200,90,.22)";g.lineWidth=3;for(let k=1;k<=3;k++){const s=k*110;g.strokeRect(-s,-s,2*s,2*s);g.rotate(Math.PI/4);g.strokeRect(-s,-s,2*s,2*s);g.rotate(-Math.PI/4)}g.restore()}
+const v=g.createLinearGradient(0,H*.6,0,H);v.addColorStop(0,"rgba(0,0,0,0)");v.addColorStop(1,"rgba(0,0,0,.45)");g.fillStyle=v;g.fillRect(0,H*.6,W,H*.4)}
+const AR=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]),SF='"Plus Jakarta Sans"';
 function wrap(s,font,dir,maxW){g.font=font;g.direction=dir;const L=[];let c="";s.split(" ").forEach(x=>{const tt=c?c+" "+x:x;if(g.measureText(tt).width>maxW&&c){L.push(c);c=x}else c=tt});if(c)L.push(c);return L}
+function rr(x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
 function draw(t){bg(t);g.textAlign="center";g.textBaseline="alphabetic";const s=cur();
-if(s){g.direction="rtl";g.font='56px "Amiri Quran"';g.fillStyle="#f1d98a";g.fillText(s.name,W/2,170);g.direction="ltr";g.font='600 24px "Space Grotesk"';g.fillStyle="rgba(255,255,255,.7)";g.fillText(s.englishName,W/2,214)}
+if(s){g.direction="ltr";g.font="700 24px "+SF;const lab=s.englishName,w=g.measureText(lab).width+56;g.fillStyle="rgba(255,255,255,.12)";rr(W/2-w/2,96,w,52,26);g.fill();g.fillStyle="#fff";g.fillText(lab,W/2,130);
+g.direction="rtl";g.font='60px "Amiri Quran"';g.fillStyle="#ffe0a0";g.fillText(s.name,W/2,222)}
 let c=null;segs.forEach(x=>{if(t>=x.start-.2)c=x});
-if(!c){g.direction="ltr";g.font='600 28px "Space Grotesk"';g.fillStyle="rgba(255,255,255,.8)";if(!ready)g.fillText("Pilih surah, lalu tekan Siapkan",W/2,H/2);return}
+if(!c){g.direction="ltr";g.font="600 28px "+SF;g.fillStyle="rgba(255,255,255,.8)";if(!ready)g.fillText("Pilih surah, lalu tekan Buat video",W/2,H/2);return}
 let a=cl((t-(c.start-.2))/.6,0,1);if(c===segs[segs.length-1])a*=cl(total-t,0,1);g.globalAlpha=a;
 const ar=c.a.ar+" ﴿"+AR(c.a.num)+"﴾",n=ar.length,sz=n>300?38:n>180?46:n>100?54:64,lh=sz*1.9,fa='"Amiri Quran"',L=wrap(ar,sz+"px "+fa,"rtl",W-110),
-ts=c.a.id.length>220?22:26,T=wrap(c.a.id,"400 "+ts+'px "Space Grotesk"',"ltr",W-120),tl=ts*1.45,bh=L.length*lh+46+T.length*tl,top=Math.max(280,H*.47-bh/2);
-g.fillStyle="#fff";g.font=sz+"px "+fa;g.direction="rtl";L.forEach((l,i)=>g.fillText(l,W/2,top+i*lh+sz));
-const y=top+L.length*lh+4;g.fillStyle="rgba(241,217,138,.6)";g.fillRect(W/2-40,y,80,2);
-g.direction="ltr";g.font="400 "+ts+'px "Space Grotesk"';g.fillStyle="rgba(255,255,255,.82)";T.forEach((l,i)=>g.fillText(l,W/2,y+40+i*tl));
-g.globalAlpha=1;g.font='600 22px "Space Grotesk"';g.fillStyle="rgba(255,255,255,.6)";g.fillText(qari()[1],W/2,H-170)}
+ts=c.a.id.length>220?22:26,T=wrap(c.a.id,"500 "+ts+"px "+SF,"ltr",W-120),tl=ts*1.5,bh=L.length*lh+50+T.length*tl,top=Math.max(300,H*.48-bh/2);
+g.fillStyle="#fff";g.font=sz+"px "+fa;g.direction="rtl";g.shadowColor="rgba(255,225,160,.4)";g.shadowBlur=26;L.forEach((l,i)=>g.fillText(l,W/2,top+i*lh+sz));g.shadowBlur=0;
+const y=top+L.length*lh+6;g.fillStyle="rgba(255,210,122,.7)";rr(W/2-36,y,72,4,2);g.fill();
+g.direction="ltr";g.font="500 "+ts+"px "+SF;g.fillStyle="rgba(255,255,255,.85)";T.forEach((l,i)=>g.fillText(l,W/2,y+44+i*tl));
+g.globalAlpha=1;g.font="600 22px "+SF;g.fillStyle="rgba(255,255,255,.65)";g.fillText(qari()[1],W/2,H-168);
+g.fillStyle="rgba(255,255,255,.18)";rr(100,H-128,W-200,6,3);g.fill();g.fillStyle="#ffd27a";rr(100,H-128,Math.max(6,(W-200)*cl(t/total,0,1)),6,3);g.fill()}
 init();loop();
 })();
 </script></body></html>
