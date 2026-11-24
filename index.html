@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Klaper – video dari prompt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eceee9;--card:#fbfcfa;--ink:#111a16;--mut:#5d6a63;--line:#cfd6cf;--ac:#2a45ff;--acf:#fff;--hl:#f5d90a;--in:#fff;--ok:#1f8a4c;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1310;--card:#161e19;--ink:#e9efe9;--mut:#93a29a;--line:#2b372f;--ac:#8c9bff;--acf:#0d1310;--in:#101712;--ok:#5fd48e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1310;--card:#161e19;--ink:#e9efe9;--mut:#93a29a;--line:#2b372f;--ac:#8c9bff;--acf:#0d1310;--in:#101712;--ok:#5fd48e;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 'Space Grotesk',system-ui,'Segoe UI',Arial,sans-serif}
+body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.bar{height:12px;background:repeating-linear-gradient(135deg,var(--ink) 0 16px,var(--hl) 16px 32px)}
+.w{max-width:1080px;margin:auto;padding:0 18px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:16px;padding-bottom:6px;flex-wrap:wrap}
+h1{margin:0;font-size:30px;letter-spacing:-.03em}
+.sub{margin:0;color:var(--mut);font-size:14px}
+.pill{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:7px 14px;font-weight:600;font-size:14px}
+.pill i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--mut);margin-right:7px}
+.pill.on i{background:var(--ok)}
+#set{margin:10px 0;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:0 16px}
+#set summary{cursor:pointer;padding:12px 0;font-weight:600}
+#set .in{padding-bottom:16px}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0}
+.tabs button{border:1px solid var(--line);background:var(--card);color:var(--mut);border-radius:10px;padding:9px 4px;font-weight:600;font-size:14px}
+.tabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tabs button.done:not(.on){color:var(--ok);border-color:var(--ok)}
+.grid{display:grid;gap:20px;grid-template-columns:minmax(0,1fr);padding-bottom:40px}
+@media(min-width:900px){.grid{grid-template-columns:minmax(0,1fr) 340px}.side{position:sticky;top:14px;align-self:start}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+.k{margin:0;color:var(--mut);font-size:13px;font-weight:600}
+h2{margin:2px 0 4px;font-size:22px;letter-spacing:-.02em}
+label{display:block;font-weight:600;margin:16px 0 6px}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--in);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+textarea{min-height:110px;resize:vertical;font:12.5px/1.4 ui-monospace,Consolas,monospace}
+button{font:inherit;cursor:pointer}
+.b{background:var(--ac);color:var(--acf);border:0;border-radius:10px;padding:11px 18px;font-weight:700;min-height:44px}
+.b.big{padding:13px 22px;font-size:17px}
+.g{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-height:44px;font-weight:600}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.hint{color:var(--mut);font-size:14px;margin:0}
+.set{display:flex;gap:8px;flex-wrap:wrap}
+.set button{border:1px solid var(--line);background:var(--in);color:var(--ink);border-radius:99px;padding:8px 16px;font-weight:600}
+.set button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.idea{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:10px;cursor:pointer;background:var(--in)}
+.idea:hover{border-color:var(--ac)}
+.idea.on{border-color:var(--ac);outline:2px solid var(--ac)}
+.idea b{display:block}
+.sc{display:grid;grid-template-columns:26px minmax(0,1fr) 66px;gap:8px;margin-top:8px;align-items:start}
+.sc span{padding-top:11px;color:var(--mut)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.chip{border:1px solid var(--line);border-radius:99px;padding:3px 11px;font-size:13px}
+.chip.ok{background:var(--hl);color:#111a16;border-color:var(--hl)}
+details.man{margin-top:20px;border-top:1px solid var(--line);padding-top:12px}
+details.man summary{cursor:pointer;font-weight:600;color:var(--mut)}
+.nav{display:flex;justify-content:space-between;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+.msg{font-size:14px;color:var(--mut)}
+canvas{width:100%;max-width:300px;margin:0 auto;aspect-ratio:9/16;border-radius:10px;background:#000;display:block}
+@media(min-width:900px){canvas{max-width:none}}
+.hide{display:none}
+a{color:var(--ac)}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+</style></head><body>
+<div class="bar"></div>
+<div class="w">
+<header><div><h1>Klaper</h1><p class="sub">Bikin video pendek dari satu topik: ide, narasi, suara, animasi.</p></div>
+<button class="pill" id="pill"><i></i><span>Belum terhubung</span></button></header>
+
+<details id="set"><summary>Pengaturan: hubungkan Google AI Studio</summary><div class="in">
+<p class="hint">Kunci API dipakai untuk menulis ide, narasi, kode animasi, dan membuat suara. Kunci hanya disimpan di browser ini dan dikirim langsung ke Google. Ambil kunci gratis di <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>.</p>
+<label for="key">Kunci API</label><input id="key" type="password" autocomplete="off" placeholder="AIza...">
+<label for="tm">Model teks</label><input id="tm">
+<label for="sm">Model suara</label><input id="sm">
+<div class="row"><button class="g" id="test">Tes koneksi</button><span class="msg" id="mset"></span></div>
+<p class="hint" style="margin-top:10px">Nama model bisa berubah. Kalau muncul error model tidak ditemukan, cek daftar terbaru di dokumentasi Gemini API lalu ganti di sini. Halaman ini harus dibuka dari hosting sendiri (Vercel atau GitHub Pages) supaya bisa menghubungi Google.</p>
+</div></details>
+
+<div class="tabs" id="tabs"></div>
+<div class="grid"><main class="card">
+
+<section id="p1">
+<p class="k">Langkah 1 dari 5</p><h2>Mau bikin video tentang apa?</h2>
+<p class="hint">Tulis topiknya, lalu AI memberi 5 ide. Boleh dikosongkan kalau mau ide bebas.</p>
+<label for="topic">Topik</label><input id="topic" placeholder="mis. persiapan Ramadan 80 hari lagi">
+<label>Durasi</label><div class="set" id="durs"></div>
+<label for="tone">Nada</label><select id="tone"><option>serius tapi santai</option><option>jenaka tapi ngena</option><option>blak-blakan tanpa basa-basi</option><option>tenang dan reflektif</option></select>
+<div class="row"><button class="b big" id="go1">Buat 5 ide</button><span class="msg" id="m1"></span></div>
+<div id="ideas"></div>
+<details class="man" id="man1"><summary>Cara manual: salin prompt, tempel jawaban</summary>
+<label for="pr1">Prompt</label><textarea id="pr1" readonly></textarea>
+<div class="row"><button class="g" data-copy="pr1">Salin prompt</button></div>
+<label for="in1">Jawaban AI</label><textarea id="in1" placeholder="Tempel jawaban di sini"></textarea>
+<div class="row"><button class="b" id="ok1">Baca jawaban</button></div></details>
+<div class="nav"><span></span><button class="g" data-go="1">Lanjut</button></div>
+</section>
+
+<section id="p2" class="hide">
+<p class="k">Langkah 2 dari 5</p><h2>Tulis narasinya</h2>
+<p class="hint" id="i2">Pilih satu ide di langkah 1 dulu. AI akan memecahnya jadi scene pendek yang bisa kamu edit.</p>
+<div class="row"><button class="b big" id="go2">Tulis narasi</button><span class="msg" id="m2"></span></div>
+<div id="sc"></div>
+<details class="man" id="man2"><summary>Cara manual: salin prompt, tempel jawaban</summary>
+<label for="pr2">Prompt</label><textarea id="pr2" readonly></textarea>
+<div class="row"><button class="g" data-copy="pr2">Salin prompt</button></div>
+<label for="in2">Jawaban AI</label><textarea id="in2" placeholder="Tempel jawaban di sini"></textarea>
+<div class="row"><button class="b" id="ok2">Baca jawaban</button></div></details>
+<div class="nav"><button class="g" data-go="-1">Kembali</button><button class="g" data-go="1">Lanjut</button></div>
+</section>
+
+<section id="p3" class="hide">
+<p class="k">Langkah 3 dari 5</p><h2>Buat suaranya</h2>
+<p class="hint">Setiap scene dibacakan satu per satu, lalu durasi scene menyesuaikan panjang suara. Langkah ini boleh dilewati kalau kamu mau menambah suara sendiri nanti.</p>
+<label for="voice">Suara</label><select id="voice"></select>
+<label for="vstyle">Gaya membaca</label><input id="vstyle">
+<div class="row"><button class="b big" id="go3">Buat suara</button><button class="g" id="redo3">Ulangi dari awal</button></div>
+<p class="msg" id="m3" style="margin-top:10px"></p>
+<div class="chips" id="st3"></div>
+<details class="man"><summary>Punya rekaman sendiri? Unggah audio utuh</summary>
+<p class="hint" style="margin-top:8px">Durasi semua scene akan disesuaikan dengan panjang rekaman.</p>
+<div class="row"><input type="file" id="fa" accept="audio/*"></div></details>
+<div class="nav"><button class="g" data-go="-1">Kembali</button><button class="g" data-go="1">Lanjut</button></div>
+</section>
+
+<section id="p4" class="hide">
+<p class="k">Langkah 4 dari 5</p><h2>Buat animasinya</h2>
+<p class="hint">AI menulis kode gambar untuk setiap scene. Scene tanpa kode memakai animasi bawaan, jadi langkah ini boleh dilewati. Kode dari AI dijalankan di halaman ini, jadi tempel hanya jawaban yang kamu minta sendiri.</p>
+<div class="row"><button class="b big" id="go4">Buat animasi</button></div>
+<p class="msg" id="m4" style="margin-top:10px"></p>
+<div class="chips" id="st4"></div>
+<details class="man" id="man4"><summary>Cara manual: salin prompt, tempel jawaban</summary>
+<label for="batch">Kelompok scene</label><select id="batch"></select>
+<label for="pr4">Prompt</label><textarea id="pr4" readonly></textarea>
+<div class="row"><button class="g" data-copy="pr4">Salin prompt</button></div>
+<label for="in4">Jawaban AI</label><textarea id="in4" placeholder="Tempel jawaban di sini"></textarea>
+<div class="row"><button class="b" id="ok4">Baca kode</button></div></details>
+<div class="nav"><button class="g" data-go="-1">Kembali</button><button class="g" data-go="1">Lanjut</button></div>
+</section>
+
+<section id="p5" class="hide">
+<p class="k">Langkah 5 dari 5</p><h2>Simpan videonya</h2>
+<p class="hint">Ekspor merekam pratinjau secara real-time ke file WebM lengkap dengan suara. Biarkan tab ini terbuka selama merekam.</p>
+<div class="row"><button class="b big" id="exp">Ekspor video</button></div>
+<div class="row"><button class="g" id="sv">Simpan proyek</button><button class="g" id="ld">Buka proyek</button><input type="file" id="fl" accept=".json" class="hide"></div>
+<p class="hint" style="margin-top:8px">File proyek menyimpan teks, scene, dan kode. Suara tidak ikut tersimpan, jadi buat ulang di langkah 3 setelah membuka proyek.</p>
+<p class="msg" id="m5" style="margin-top:10px"></p>
+<div class="nav"><button class="g" data-go="-1">Kembali</button><span></span></div>
+</section>
+</main>
+<aside class="side card"><canvas id="cv" width="720" height="1280" aria-label="Pratinjau video"></canvas>
+<div class="row"><button class="g" id="pp">Putar</button><input type="range" id="sk" min="0" max="0" value="0" aria-label="Posisi" style="flex:1;min-height:0"><span class="hint" id="tm2">0:00</span></div></aside>
+</div></div>
+
+<script>
+(()=>{
+const $=q=>document.querySelector(q),FEN="`".repeat(3),W=720,H=1280,wait=ms=>new Promise(r=>setTimeout(r,ms));
+const ls={g(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},s(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let S=Object.assign({topic:"",dur:60,tone:"serius tapi santai",ideas:[],pick:-1,title:"",scenes:[],pal:{a:"#12201a",b:"#2a3f6b",c:"#f5d90a",t:"#f4f7f2"},code:{},style:"",voice:"Kore",vstyle:"Bacakan dengan tenang dan hangat"},ls.g("klaper")||{});
+let G=Object.assign({key:"",tm:"gemini-flash-latest",sm:"gemini-3.1-flash-tts-preview"},ls.g("klaper_g")||{});
+const save=()=>ls.s("klaper",S),saveG=()=>ls.s("klaper_g",G);
+const msg=(id,t)=>{$(id).textContent=t};
+const hex=x=>/^#[0-9a-f]{6}$/i.test(x||"");
+let aud={},full=null,step=1,errs={},fns={};
+
+/* ---------- navigasi ---------- */
+const TB=["Ide","Narasi","Suara","Animasi","Ekspor"];
+TB.forEach((t,i)=>{const b=document.createElement("button");b.onclick=()=>show(i+1);$("#tabs").appendChild(b)});
+function marks(){const d=[S.pick>=0,S.scenes.length>0,full||Object.keys(aud).length>0,Object.keys(S.code).length>0,false];TB.forEach((t,i)=>{const b=$("#tabs").children[i];b.textContent=(d[i]?"✓ ":(i+1)+". ")+t;b.classList.toggle("done",!!d[i]);b.classList.toggle("on",i+1===step)})}
+function show(n){step=Math.max(1,Math.min(5,n));for(let i=1;i<=5;i++)$("#p"+i).classList.toggle("hide",i!==step);marks();window.scrollTo({top:0})}
+document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(g)show(step+ +g.dataset.go);const b=e.target.closest("[data-copy]");if(b){const el=$("#"+b.dataset.copy);el.select();try{navigator.clipboard.writeText(el.value).catch(()=>document.execCommand("copy"))}catch(x){document.execCommand("copy")}b.textContent="Tersalin";setTimeout(()=>b.textContent="Salin prompt",1500)}});
+
+/* ---------- koneksi Google AI Studio ---------- */
+function pill(){const p=$("#pill");p.classList.toggle("on",!!G.key);p.querySelector("span").textContent=G.key?"AI terhubung":"Belum terhubung"}
+$("#pill").onclick=()=>{const d=$("#set");d.open=!d.open;if(d.open)d.scrollIntoView({behavior:"smooth"})};
+[["#key","key"],["#tm","tm"],["#sm","sm"]].forEach(([q,k])=>{$(q).value=G[k];$(q).oninput=()=>{G[k]=$(q).value.trim();saveG();pill()}});
+async function gem(model,body,say){if(!G.key)throw new Error("Isi kunci API Google AI Studio di Pengaturan dulu.");
+for(let a=0;;a++){let r;try{r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":G.key},body:JSON.stringify(body)})}catch(e){throw new Error("Tidak bisa terhubung ke Google. Buka halaman ini dari hosting sendiri (Vercel atau GitHub Pages), bukan dari pratinjau claude.ai.")}
+if(r.status===429&&a<3){for(let s=20*(a+1);s>0;s--){say&&say("Batas kecepatan Google tercapai. Mencoba lagi dalam "+s+" detik...");await wait(1000)}continue}
+const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(r.status===400&&/API key/i.test(JSON.stringify(j))?"Kunci API tidak valid.":(j.error&&j.error.message)||"Error "+r.status);return j}}
+$("#test").onclick=async()=>{msg("#mset","Menguji...");try{await gem(G.tm,{contents:[{parts:[{text:"Balas satu kata: ok"}]}]});msg("#mset","Terhubung. Model teks berfungsi.")}catch(e){msg("#mset",e.message)}};
+async function askAI(prompt,json,say){if(G.key){const body={contents:[{parts:[{text:prompt}]}]};if(json)body.generationConfig={responseMimeType:"application/json"};const j=await gem(G.tm,body,say);return((j.candidates&&j.candidates[0]&&j.candidates[0].content.parts)||[]).map(p=>p.text||"").join("")}
+let sm=null;try{sm=window.claude&&await claude.use("sample")}catch(e){}
+if(sm){const r=await sm(prompt,{cache:false,modelTier:"complex"});return r.text}
+throw new Error("Isi kunci API Google AI Studio di Pengaturan, atau pakai cara manual di bawah.")}
+
+/* ---------- prompt ---------- */
+function pr1(){$("#pr1").value=`Kamu penulis ide video pendek berbahasa Indonesia. Buat 5 ide video bertopik "${S.topic||"bebas"}", durasi ${S.dur} detik, nada ${S.tone}.
+Aturan: tiap ide beda pesan dan beda metafora benda sehari-hari. Bahasa sederhana, langsung dipahami sekali dengar. Hindari klise (tangga kesuksesan, tetesan air melubangi batu, gunung es). Hook harus relatable, bukan kalimat kosong.
+Jawab HANYA dengan satu blok kode json:
+${FEN}json
+{"ideas":[{"title":"","hook":"kalimat pembuka","angle":"pesan inti 1-2 kalimat","visualStyle":"gaya + cahaya + warna + komposisi + benda metafora"}]}
+${FEN}`}
+function pr2(){const i=S.ideas[S.pick];if(!i){$("#pr2").value="";return}
+const n=Math.max(4,Math.round(S.dur/4)),w=Math.round(S.dur*1.6);
+$("#i2").textContent="Ide terpilih: "+i.title+". AI akan memecahnya jadi scene pendek yang bisa kamu edit.";
+$("#pr2").value=`Kamu penulis naskah video pendek berbahasa Indonesia. Ubah ide ini jadi narasi ${n} scene.
+Judul: ${i.title}
+Hook: ${i.hook}
+Pesan: ${i.angle}
+Gaya visual: ${i.visualStyle}
+Nada: ${S.tone}
+Aturan: bicara langsung seperti ke teman, tiap scene 4-8 kata, total sekitar ${w} kata, kata sehari-hari, satu benang merah metafora. Alur: hook, situasi nyata, sudut pandang baru, satu langkah konkret, penutup. Durasi tiap scene sekitar 4 detik. "visual" = satu benda utama dengan satu gerakan tegas, tanpa manusia dan tanpa wajah. "emphasis" = satu kata dari text.
+Jawab HANYA dengan satu blok kode json:
+${FEN}json
+{"title":"","palette":{"a":"#hex gelap","b":"#hex menengah","c":"#hex aksen terang","t":"#hex teks terang"},"scenes":[{"text":"","visual":"","duration":4,"emphasis":""}]}
+${FEN}`}
+function pr4(){const sel=$("#batch"),n=S.scenes.length,nb=Math.ceil(n/3),cur=Math.min(+sel.value||0,Math.max(0,nb-1));
+sel.innerHTML="";for(let b=0;b<nb;b++){const o=document.createElement("option");o.value=b;o.textContent="Scene "+(b*3+1)+"-"+Math.min(n,b*3+3);sel.appendChild(o)}sel.value=cur;
+if(!n){$("#pr4").value="Buat narasi dulu di langkah 2.";return}
+const list=S.scenes.slice(cur*3,cur*3+3).map((x,j)=>`SCENE ${cur*3+j+1} (${x.duration} detik): teks "${x.text}" | visual: ${x.visual}`).join("\n");
+$("#pr4").value=`Kamu motion designer. Tulis kode JavaScript Canvas 2D untuk scene video vertikal 720x1280 (30fps).
+Gaya: ${S.style||"ilustrasi bersih, garis tegas, cahaya lembut"}. Palet: ${S.pal.a}, ${S.pal.b}, ${S.pal.c}, ${S.pal.t}.
+Kontrak: tulis isi fungsi function (s, ctx) { ... }. Baris pertama tiap scene: // @advanced
+- Fungsi murni dari waktu: s.t (detik), s.dur, s.p (0..1). Jangan simpan state antar frame.
+- Dilarang: Math.random (pakai s.rand(i) yang hasilnya 0..1), Date, DOM, fetch, gambar atau font eksternal.
+- Lukis seluruh latar dulu (gradasi), lalu objek. Satu benda utama, bayangan lembut, gerak halus yang mengisi seluruh durasi. Tanpa manusia dan tanpa wajah.
+- Helper: s.ease.out/inOut/back/elastic(x), s.lerp(a,b,k), s.clamp(x,a,b), s.wave(freq,amp,phase), s.keys([[detik,nilai],...]).
+- Jangan menulis subtitle (sudah digambar aplikasi) dan kosongkan 320 piksel paling bawah dari objek penting.
+Scene:
+${list}
+Jawab HANYA dengan satu blok kode js, dipisah baris persis seperti ini:
+${FEN}js
+// ===== SCENE 1 =====
+// @advanced
+...kode...
+${FEN}`}
+
+/* ---------- langkah 1: ide ---------- */
+[30,45,60,90,120].forEach(d=>{const b=document.createElement("button");b.textContent=d<60?d+" dtk":d===60?"1 mnt":d===90?"1,5 mnt":"2 mnt";b.dataset.d=d;b.onclick=()=>{S.dur=d;save();durs();pr1();pr2()};$("#durs").appendChild(b)});
+const durs=()=>[...$("#durs").children].forEach(b=>b.classList.toggle("on",+b.dataset.d===S.dur));
+[["#topic","topic"],["#tone","tone"]].forEach(([q,k])=>{$(q).oninput=()=>{S[k]=$(q).value;save();pr1();pr2()}});
+function pj(t){const m=t.match(/```(?:json)?\s*([\s\S]*?)```/);const x=m?m[1]:t,a=x.indexOf("{"),b=x.lastIndexOf("}");if(a<0||b<a)throw 0;return JSON.parse(x.slice(a,b+1))}
+async function run(n,btn,json,after){const b=$(btn),m="#m"+n;b.disabled=true;msg(m,"Menunggu AI...");try{$("#in"+n).value=await askAI($("#pr"+n).value,json,x=>msg(m,x));after()}catch(e){msg(m,e.message);const d=$("#man"+n);if(d)d.open=true}b.disabled=false}
+$("#go1").onclick=()=>run(1,"#go1",true,()=>$("#ok1").click());
+$("#ok1").onclick=()=>{try{const j=pj($("#in1").value);S.ideas=j.ideas.slice(0,8).map(x=>({title:String(x.title||""),hook:String(x.hook||""),angle:String(x.angle||""),visualStyle:String(x.visualStyle||"")}));S.pick=-1;save();ideas();marks();msg("#m1",S.ideas.length+" ide siap. Klik satu untuk lanjut.")}catch(e){msg("#m1","Jawaban belum berupa JSON yang valid. Coba lagi atau tempel ulang blok json.")}};
+function ideas(){const box=$("#ideas");box.innerHTML="";S.ideas.forEach((x,i)=>{const d=document.createElement("div");d.className="idea"+(i===S.pick?" on":"");d.tabIndex=0;const b=document.createElement("b");b.textContent=x.title;const h=document.createElement("div");h.textContent=x.hook;const a=document.createElement("div");a.className="hint";a.textContent=x.angle;d.append(b,h,a);const pick=()=>{S.pick=i;S.style=x.visualStyle;save();ideas();pr2();show(2)};d.onclick=pick;d.onkeydown=e=>{if(e.key==="Enter")pick()};box.appendChild(d)})}
+
+/* ---------- langkah 2: narasi ---------- */
+$("#go2").onclick=()=>{if(S.pick<0){msg("#m2","Pilih satu ide di langkah 1 dulu.");return}run(2,"#go2",true,()=>$("#ok2").click())};
+$("#ok2").onclick=()=>{try{const j=pj($("#in2").value);S.scenes=j.scenes.map(x=>({text:String(x.text||""),visual:String(x.visual||""),duration:+x.duration||4,emphasis:String(x.emphasis||"")}));if(!S.scenes.length)throw 0;const p=j.palette||{};["a","b","c","t"].forEach(k=>{if(hex(p[k]))S.pal[k]=p[k]});S.title=String(j.title||S.title);S.code={};aud={};full=null;fns={};errs={};save();scenes();pr4();chips();sync();marks();msg("#m2",S.scenes.length+" scene siap. Edit teksnya kalau perlu, lalu lanjut.")}catch(e){msg("#m2","Jawaban belum berupa JSON scene yang valid. Coba lagi atau tempel ulang blok json.")}};
+function scenes(){const box=$("#sc");box.innerHTML="";S.scenes.forEach((x,i)=>{const r=document.createElement("div");r.className="sc";const n=document.createElement("span");n.textContent=i+1;const t=document.createElement("input");t.value=x.text;t.setAttribute("aria-label","Teks scene "+(i+1));t.oninput=()=>{x.text=t.value;save();pr4();delete aud[i];chips();marks();frame(T)};const d=document.createElement("input");d.type="number";d.min=2;d.max=15;d.step=.5;d.value=x.duration;d.setAttribute("aria-label","Durasi scene "+(i+1));d.oninput=()=>{x.duration=+d.value||4;save();sync()};r.append(n,t,d);box.appendChild(r)})}
+
+/* ---------- langkah 3: suara ---------- */
+["Kore","Puck","Charon","Aoede","Fenrir","Leda","Zephyr","Orus"].forEach(v=>{const o=document.createElement("option");o.textContent=v;$("#voice").appendChild(o)});
+$("#voice").value=S.voice;$("#vstyle").value=S.vstyle;
+$("#voice").onchange=()=>{S.voice=$("#voice").value;save()};$("#vstyle").oninput=()=>{S.vstyle=$("#vstyle").value;save()};
+let AC=null;const getAC=()=>AC||(AC=new(window.AudioContext||window.webkitAudioContext)());
+function pcm(b64){const bin=atob(b64),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);const n=u.length>>1,f=new Float32Array(n),dv=new DataView(u.buffer);for(let i=0;i<n;i++)f[i]=dv.getInt16(i*2,true)/32768;const b=getAC().createBuffer(1,n,24000);b.copyToChannel(f,0);return b}
+const fit=(i)=>{S.scenes[i].duration=Math.max(2.5,Math.round((aud[i].duration+.6)*10)/10)};
+$("#go3").onclick=async()=>{if(!S.scenes.length){msg("#m3","Buat narasi dulu di langkah 2.");return}
+if(!G.key){msg("#m3","Isi kunci API Google AI Studio di Pengaturan dulu, atau unggah rekaman sendiri di bawah.");return}
+const b=$("#go3");b.disabled=true;full=null;
+try{for(let i=0;i<S.scenes.length;i++){if(aud[i])continue;msg("#m3","Membuat suara scene "+(i+1)+" dari "+S.scenes.length+"...");
+const j=await gem(G.sm,{contents:[{parts:[{text:S.vstyle+": "+S.scenes[i].text}]}],generationConfig:{responseModalities:["AUDIO"],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:S.voice}}}}},x=>msg("#m3",x));
+const part=((j.candidates&&j.candidates[0]&&j.candidates[0].content.parts)||[]).find(p=>p.inlineData);if(!part)throw new Error("Google tidak mengembalikan audio untuk scene "+(i+1)+". Cek nama model suara di Pengaturan.");
+aud[i]=pcm(part.inlineData.data);fit(i);save();chips();marks();sync()}
+msg("#m3","Suara selesai. Tekan Putar untuk mendengarkan.")}catch(e){msg("#m3",e.message)}b.disabled=false};
+$("#redo3").onclick=()=>{aud={};full=null;chips();marks();msg("#m3","Suara dihapus. Tekan Buat suara untuk mengulang.")};
+$("#fa").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const b=await getAC().decodeAudioData(await f.arrayBuffer());full=b;aud={};const k=(b.duration+.5)/(TT()||1);S.scenes.forEach(x=>{x.duration=Math.max(1,Math.round((+x.duration||4)*k*10)/10)});save();scenes();chips();marks();sync();msg("#m3","Rekaman dipasang ("+fmt(b.duration)+"). Durasi scene disesuaikan.")}catch(x){msg("#m3","File audio tidak bisa dibaca.")}e.target.value=""};
+
+/* ---------- langkah 4: animasi ---------- */
+function chips(){[["#st3",i=>aud[i]||full?" suara":" belum",i=>!!(aud[i]||full)],["#st4",i=>S.code[i]?(errs[i]?" error":" kode"):" bawaan",i=>S.code[i]&&!errs[i]]].forEach(([id,txt,ok])=>{const b=$(id);b.innerHTML="";S.scenes.forEach((_,i)=>{const c=document.createElement("span");c.className="chip"+(ok(i)?" ok":"");c.textContent="Scene "+(i+1)+txt(i);if(errs[i])c.title=errs[i];b.appendChild(c)})})}
+$("#batch").onchange=pr4;
+$("#ok4").onclick=()=>{const t=$("#in4").value.replace(/^```\w*\s*$/gm,""),p=t.split(/\/\/\s*=+\s*SCENE\s+(\d+)\s*=+/i);let c=0;for(let i=1;i<p.length;i+=2){const k=+p[i]-1;if(S.scenes[k]&&p[i+1].trim()){S.code[k]=p[i+1].trim();c++}}
+if(!c){msg("#m4","Tidak ada kode scene. Pastikan ada baris // ===== SCENE n =====");return}
+save();errs={};chips();marks();frame(T);msg("#m4",c+" scene diperbarui.")};
+$("#go4").onclick=async()=>{if(!S.scenes.length){msg("#m4","Buat narasi dulu di langkah 2.");return}
+const nb=Math.ceil(S.scenes.length/3),b=$("#go4");b.disabled=true;
+try{for(let k=0;k<nb;k++){$("#batch").value=k;pr4();msg("#m4","Menggambar scene "+(k*3+1)+"-"+Math.min(S.scenes.length,k*3+3)+" ("+(k+1)+" dari "+nb+")...");
+$("#in4").value=await askAI($("#pr4").value,false,x=>msg("#m4",x));$("#ok4").click()}
+msg("#m4","Selesai. Tekan Putar untuk melihat hasilnya.")}catch(e){msg("#m4",e.message);$("#man4").open=true}b.disabled=false};
+
+/* ---------- mesin render ---------- */
+const cv=$("#cv"),cx=cv.getContext("2d");
+const E={out:x=>1-Math.pow(1-x,3),inOut:x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2,back:x=>1+2.70158*Math.pow(x-1,3)+1.70158*Math.pow(x-1,2),elastic:x=>x<=0||x>=1?x:Math.pow(2,-10*x)*Math.sin((x*10-.75)*2.094)+1,outExpo:x=>x>=1?1:1-Math.pow(2,-10*x)};
+const cl=(x,a,b)=>Math.min(b,Math.max(a,x)),lp=(a,b,k)=>a+(b-a)*k;
+const rand=i=>{let x=Math.imul((i|0)^0x9e3779b9,0x85ebca6b);x^=x>>>13;x=Math.imul(x,0xc2b2ae35);x^=x>>>16;return(x>>>0)/4294967296};
+const TT=()=>S.scenes.reduce((a,x)=>a+(+x.duration||4),0);
+function compile(i){const c=S.code[i];if(!c)return null;if(fns[i]&&fns[i].src===c)return fns[i].f;let f=null;try{const g=new Function("s","ctx","window","document","fetch","Date","performance","requestAnimationFrame","setTimeout","setInterval",c);f=(s,x)=>g(s,x)}catch(e){errs[i]=e.message}fns[i]={src:c,f};return f}
+function rr(x,y,w,h,r){cx.beginPath();cx.moveTo(x+r,y);cx.arcTo(x+w,y,x+w,y+h,r);cx.arcTo(x+w,y+h,x,y+h,r);cx.arcTo(x,y+h,x,y,r);cx.arcTo(x,y,x+w,y,r);cx.closePath()}
+const norm=x=>String(x).toLowerCase().replace(/[^\p{L}\p{N}]/gu,"");
+function words(sc,d,i){const w=sc.text.trim().split(/\s+/).filter(Boolean),wt=w.map(x=>x.length+2),tot=wt.reduce((a,b)=>a+b,0)||1,a=aud[i],span=a?a.duration*.95:Math.max(.5,d*.82);let t=a?.2:.25;return w.map((x,k)=>{const at=t;t+=span*wt[k]/tot;return{text:x,at,end:t,key:!!sc.emphasis&&norm(x)===norm(sc.emphasis)}})}
+function def(s){const P=S.pal,g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,P.a);g.addColorStop(1,P.b);cx.fillStyle=g;cx.fillRect(0,0,W,H);
+const k=E.out(cl(s.t/.9,0,1)),dir=s.idx%2?1:-1;cx.save();cx.translate(W/2,H*.4);cx.rotate(dir*(s.t*.18+.3));
+for(let i=4;i>=0;i--){const r=(70+i*58)*k*(1+Math.sin(s.t*1.6+i)*.02);cx.globalAlpha=.14+(4-i)*.08;cx.fillStyle=i%2?P.t:P.c;rr(-r,-r,r*2,r*2,r*.22);cx.fill()}cx.restore();cx.globalAlpha=1}
+function cap(s){const sz=34,mw=600,ws=s.caption.words;if(!ws.length)return;cx.font=`700 ${sz}px 'Space Grotesk',Arial,sans-serif`;cx.textBaseline="middle";cx.textAlign="left";
+const sp=cx.measureText(" ").width,lines=[[]];let x=0;ws.forEach(w=>{w.w=cx.measureText(w.text).width;if(x+w.w>mw&&lines[lines.length-1].length){lines.push([]);x=0}lines[lines.length-1].push(w);x+=w.w+sp});
+const lh=sz*1.35,ph=lines.length*lh+sz*.7,lw=l=>l.reduce((a,w)=>a+w.w+sp,-sp),bw=Math.max(...lines.map(lw))+sz*1.3,y0=H-200-ph;
+cx.fillStyle="rgba(10,16,13,.74)";rr(W/2-bw/2,y0,bw,ph,18);cx.fill();
+lines.forEach((l,i)=>{let px=W/2-lw(l)/2;const py=y0+sz*.35+lh*i+lh/2;l.forEach(w=>{if(s.t>=w.at){cx.fillStyle=w.key?S.pal.c:"#f4f7f2";const z=w.key?1+.1*E.out(cl((s.t-w.at)/.2,0,1)):1;if(z>1){cx.save();cx.translate(px+w.w/2,py);cx.scale(z,z);cx.textAlign="center";cx.fillText(w.text,0,0);cx.restore()}else cx.fillText(w.text,px,py)}px+=w.w+sp})})}
+let T=0;
+function frame(t){t=cl(t,0,Math.max(0,TT()-.001));cx.setTransform(1,0,0,1,0,0);cx.globalAlpha=1;
+if(!S.scenes.length){const g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,S.pal.a);g.addColorStop(1,S.pal.b);cx.fillStyle=g;cx.fillRect(0,0,W,H);cx.fillStyle=S.pal.t;cx.font="700 54px 'Space Grotesk',Arial,sans-serif";cx.textAlign="center";cx.textBaseline="middle";cx.fillText("Klaper",W/2,H/2);return}
+let acc=0,i=0;for(;i<S.scenes.length;i++){const d=+S.scenes[i].duration||4;if(t<acc+d||i===S.scenes.length-1)break;acc+=d}
+const sc=S.scenes[i],d=+sc.duration||4,lt=cl(t-acc,0,d);
+const s={t:lt,dur:d,p:lt/d,idx:i,rand,ease:E,lerp:lp,clamp:cl,wave:(f,a,p)=>Math.sin(lt*f*6.283+(p||0))*a,keys:arr=>{if(lt<=arr[0][0])return arr[0][1];for(let j=1;j<arr.length;j++)if(lt<=arr[j][0]){const A=arr[j-1],B=arr[j];return lp(A[1],B[1],(lt-A[0])/((B[0]-A[0])||1))}return arr[arr.length-1][1]},spring:st=>{const x=cl(lt-st,0,9);return 1-Math.exp(-6*x)*Math.cos(12*x)},sfx(){},caption:{text:sc.text,words:words(sc,d,i),size:34,maxWidth:600}};
+let ok=false;const f=compile(i);if(f){cx.save();try{f(s,cx);ok=true;delete errs[i]}catch(e){errs[i]=e.message}cx.restore()}
+cx.setTransform(1,0,0,1,0,0);cx.globalAlpha=1;cx.shadowBlur=0;cx.shadowColor="transparent";cx.globalCompositeOperation="source-over";cx.filter="none";
+if(!ok){cx.save();def(s);cx.restore()}
+cap(s);
+const e=.3,al=lt<e?1-lt/e:lt>d-e?(lt-(d-e))/e:0;if(al>0){cx.fillStyle=S.pal.a;cx.globalAlpha=al;cx.fillRect(0,0,W,H);cx.globalAlpha=1}}
+
+/* ---------- putar dan audio ---------- */
+let playing=false,t0=0,onEnd=null,srcs=[],dest=null;
+const fmt=x=>Math.floor(x/60)+":"+String(Math.floor(x%60)).padStart(2,"0");
+const hasAud=()=>!!full||Object.keys(aud).length>0;
+function stopAudio(){srcs.forEach(n=>{try{n.stop()}catch(e){}});srcs=[]}
+function startAudio(from,toDest){stopAudio();if(!hasAud())return;const a=getAC(),base=a.currentTime+.05,out=toDest?dest:a.destination;let acc=0;
+const add=(b,st)=>{const o=from-st;if(o>=b.duration)return;const n=a.createBufferSource();n.buffer=b;n.connect(out);n.start(o>=0?base:base-o,Math.max(0,o));srcs.push(n)};
+if(full)add(full,0);else S.scenes.forEach((x,i)=>{if(aud[i])add(aud[i],acc+.15);acc+=+x.duration||4})}
+function upd(){$("#sk").value=Math.round(T*100);$("#tm2").textContent=fmt(T)+" / "+fmt(TT())}
+function sync(){$("#sk").max=Math.round(TT()*100);frame(T);upd()}
+function setP(){$("#pp").textContent=playing?"Jeda":"Putar"}
+function tick(now){if(!playing)return;T=(now-t0)/1000;if(T>=TT()){T=TT();playing=false;stopAudio();setP();frame(T);upd();chips();if(onEnd){const f=onEnd;onEnd=null;f()}return}frame(T);upd();requestAnimationFrame(tick)}
+async function play(from,cb,toDest){if(!S.scenes.length)return;if(hasAud())await getAC().resume();T=from;onEnd=cb||null;startAudio(from,toDest);t0=performance.now()-from*1000;playing=true;setP();requestAnimationFrame(tick)}
+$("#pp").onclick=()=>{if(playing){playing=false;stopAudio();setP();return}play(T>=TT()-.05?0:T)};
+$("#sk").oninput=e=>{playing=false;stopAudio();setP();T=e.target.value/100;frame(T);upd()};
+
+/* ---------- ekspor dan proyek ---------- */
+const slug=()=>(S.title||"video").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"video";
+async function saveFile(name,data){let D=null;try{D=window.claude?await claude.use("downloads"):null}catch(e){}
+if(D){await D.save({filename:name,data});return}
+const u=URL.createObjectURL(data instanceof Blob?data:new Blob([data]));const a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
+$("#exp").onclick=async()=>{if(!S.scenes.length){msg("#m5","Belum ada scene. Selesaikan langkah 2.");return}
+if(!window.MediaRecorder){msg("#m5","Browser ini tidak bisa merekam video. Pakai Chrome atau Edge di komputer.");return}
+const a=getAC();await a.resume();dest=a.createMediaStreamDestination();
+const mt=["video/webm;codecs=vp9,opus","video/webm"].find(x=>MediaRecorder.isTypeSupported(x));if(!mt){msg("#m5","Browser ini tidak bisa merekam WebM.");return}
+const rec=new MediaRecorder(new MediaStream([...cv.captureStream(30).getVideoTracks(),...dest.stream.getAudioTracks()]),{mimeType:mt,videoBitsPerSecond:6e6}),ch=[];rec.ondataavailable=e=>{if(e.data.size)ch.push(e.data)};
+$("#exp").disabled=true;msg("#m5","Merekam "+fmt(TT())+"... jangan tutup tab.");
+rec.onstop=async()=>{$("#exp").disabled=false;dest=null;try{await saveFile(slug()+".webm",new Blob(ch,{type:"video/webm"}));msg("#m5","Video diekspor.")}catch(e){msg("#m5",e&&e.code==="declined"?"Penyimpanan dibatalkan.":"Gagal menyimpan file.")}};
+rec.start(250);play(0,()=>setTimeout(()=>rec.stop(),400),true)};
+$("#sv").onclick=async()=>{try{await saveFile("proyek-"+slug()+".json",JSON.stringify(S,null,1));msg("#m5","Proyek disimpan.")}catch(e){msg("#m5","Penyimpanan dibatalkan atau gagal.")}};
+$("#ld").onclick=()=>$("#fl").click();
+$("#fl").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const j=JSON.parse(await f.text());if(!Array.isArray(j.scenes))throw 0;S=Object.assign(S,j);aud={};full=null;fns={};errs={};save();init();msg("#m5","Proyek dibuka. Buat ulang suara di langkah 3.")}catch(x){msg("#m5","File proyek tidak valid.")}e.target.value=""};
+
+/* ---------- awal ---------- */
+function init(){$("#topic").value=S.topic;$("#tone").value=S.tone;durs();pr1();pr2();pr4();ideas();scenes();chips();pill();sync();show(1)}
+init();
+})();
+</script></body></html>
